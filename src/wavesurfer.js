@@ -735,8 +735,9 @@ export default class WaveSurfer extends util.Observer {
         this.backend.on('play', () => this.fireEvent('play'));
         this.backend.on('pause', () => this.fireEvent('pause'));
 
-        this.backend.on('audioprocess', time => {
-            this.drawer.progress(this.backend.getPlayedPercents());
+        this.backend.on('audioprocess', (time, usePassedTime) => {
+            const progress = usePassedTime ? this.backend.getTimePercents(time) : this.backend.getPlayedPercents();
+            this.drawer.progress(progress);
             this.fireEvent('audioprocess', time);
         });
 

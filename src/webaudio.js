@@ -252,6 +252,7 @@ export default class WebAudio extends util.Observer {
                 this.setState(FINISHED);
                 this.fireEvent('pause');
             } else if (time >= this.scheduledPause) {
+                this.fireEvent('audioprocess', this.scheduledPause, true);
                 this.pause();
             } else if (this.state === this.states[PLAYING]) {
                 this.fireEvent('audioprocess', time);
@@ -493,6 +494,23 @@ export default class WebAudio extends util.Observer {
         }
 
         return this.params.splitChannels ? this.splitPeaks : this.mergedPeaks;
+    }
+
+    /**
+     * Get the position from 0 to 1 of passed {time} argument
+     * @param {number} time between 0 and duration, to convert into progress
+     *
+     * @return {number} Current position
+     */
+    getTimePercents(time) {
+        const duration = this.getDuration();
+        if (time < 0) {
+            return 0;
+        }
+        if (time > duration) {
+            return 1;
+        }
+        return time / duration;
     }
 
     /**
